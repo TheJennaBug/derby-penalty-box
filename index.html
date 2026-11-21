@@ -33,9 +33,9 @@ body{
     height:100%;
     display:grid;
     grid-template-rows:
-        36px
-        80px
-        125px
+        40px
+        90px
+        170px
         1fr;
     gap:4px;
 }
@@ -151,7 +151,7 @@ button{
 .jammerSection{
     display:flex;
     flex-direction:column;
-    justify-content:center;
+    justify-content:flex-start;
 }
 
 .jammerTitle{
@@ -161,7 +161,7 @@ button{
 
 .jammerValue{
     text-align:center;
-    font-size:2rem;
+    font-size:1.5rem;
     color:#00ff88;
     font-weight:bold;
 }
@@ -186,7 +186,7 @@ button{
 }
 
 .blocker{
-    background:#222;
+    background:#2b2b2b;
     border-radius:8px;
     padding:4px;
 }
@@ -289,7 +289,9 @@ text-align:center;
 NEW = reset jam timer • START = run jam • STOP = pause jam & penalty timers
 </div>
 
-</div>
+</div> <!-- jamButtons -->
+
+</div> <!-- jamPanel -->
 
 <!-- JAMMER -->
 
@@ -330,7 +332,7 @@ INCOMING
 font-size:.45rem;
 color:#888;
 ">
-Swap when 2nd jammer is seated
+When 2nd sits
 </span>
 
 </div>
@@ -441,12 +443,11 @@ class="release">
 RELEASE ✓
 </div>
 
-</div>
+</div> <!-- blocker -->
+</div> <!-- blockers -->
+</div> <!-- blocker panel -->
 
-</div>
-
-</div>
-
+</div> <!-- dashboard -->
 <script>
 
 /* =====================
