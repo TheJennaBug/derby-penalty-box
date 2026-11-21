@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>Derby Penalty Box</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#111;
+    color:#fff;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    padding:4px;
+}
+
+.dashboard{
+    height:100%;
+    display:grid;
+    grid-template-rows:
+        36px
+        72px
+        120px
+        1fr
+        80px;
+    gap:4px;
+}
+
+.panel{
+    background:#222;
+    border-radius:8px;
+    padding:4px;
+}
+
+button{
+    border:none;
+    border-radius:6px;
+    color:white;
+    font-weight:bold;
+}
+
+.small{
+    height:28px;
+    font-size:.72rem;
+}
+
+.green{
+    background:#15803d;
+}
+
+.red{
+    background:#c62828;
+}
+
+.blue{
+    background:#1565c0;
+}
+
+.orange{
+    background:#ff9800;
+    color:black;
+}
+
+.gray{
+    background:#555;
+}
+
+.timer{
+    color:#00ff88;
+    font-weight:bold;
+    text-align:center;
+}
+
+.warning{
+    color:#ffb300 !important;
+}
+
+.expired{
+    color:#ff4444 !important;
+}
+
+/* WAKE */
+
+.wake{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:8px;
+}
+
+#wakeStatus{
+    font-size:.65rem;
+}
+
+/* JAM */
+
+.jamPanel{
+    display:grid;
+    grid-template-columns:80px 1fr;
+    gap:4px;
+}
+
+.jamClockArea{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.jamLabel{
+    font-size:.55rem;
+}
+
+#jamClock{
+    font-size:1.45rem;
+}
+
+#jamStatus{
+    font-size:.55rem;
+}
+
+.jamButtons{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:2px;
+    align-items:center;
+}
+
+/* JAMMER */
+
+.jammerPanel{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+}
+
+.jammerSection{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.jammerTitle{
+    text-align:center;
+    font-size:.6rem;
+}
+
+.jammerValue{
+    text-align:center;
+    font-size:2rem;
+    color:#00ff88;
+    font-weight:bold;
+}
+
+.release{
+    display:none;
+    text-align:center;
+    margin-top:3px;
+    background:#00aa44;
+    padding:2px;
+    border-radius:4px;
+    font-size:.8rem;
+    font-weight:bold;
+}
+
+/* BLOCKERS */
+
+.blockers{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:4px;
+}
+
+.blocker{
+    background:#222;
+    border-radius:8px;
+    padding:4px;
+}
+
+.blockerTitle{
+    text-align:center;
+    font-size:.65rem;
+}
+
+select{
+    width:100%;
+    height:24px;
+    border:none;
+    border-radius:4px;
+    margin-top:2px;
+    font-size:.7rem;
+}
+
+.blockerTimer{
+    font-size:1.55rem;
+    margin:4px 0;
+}
+
+.buttonRow{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2px;
+}
+
+/* HELP */
+
+.help{
+    font-size:.52rem;
+    line-height:1.2;
+    color:#ddd;
+}
+
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+
+<!-- WAKE -->
+
+<div class="panel wake">
+
+<button class="small gray"
+onclick="enableWakeLock()">
+🔒 KEEP AWAKE
+</button>
+
+<div id="wakeStatus">
+OFF
+</div>
+
+</div>
+
+<!-- JAM -->
+
+<div class="panel jamPanel">
+
+<div class="jamClockArea">
+
+<div class="jamLabel">
+JAM
+</div>
+
+<div id="jamClock"
+class="timer">
+02:00
+</div>
+
+<div id="jamStatus">
+PAUSED
+</div>
+
+</div>
+
+<div class="jamButtons">
+
+<button class="small blue"
+onclick="newJam()">
+NEW
+</button>
+
+<button class="small green"
+onclick="startJam()">
+START
+</button>
+
+<button class="small red"
+onclick="stopJam()">
+STOP
+</button>
+
+</div>
+
+</div>
+
+<!-- JAMMER -->
+
+<div class="panel jammerPanel">
+
+<div class="jammerSection">
+
+<div class="jammerTitle">
+CURRENT JAMMER
+</div>
+
+<div id="jammerCurrent"
+class="jammerValue">
+0
+</div>
+
+<button class="small green"
+onclick="seatJammer()">
+SEAT
+</button>
+
+</div>
+
+<div class="jammerSection">
+
+<div class="jammerTitle">
+INCOMING
+</div>
+
+<div id="jammerIncoming"
+class="jammerValue">
+0
+</div>
+
+<button class="small orange"
+onclick="swapJammer()">
+SWAP
+</button>
+
+</div>
+
+</div>
+
+<!-- BLOCKERS -->
+
+<div class="blockers">
+
+<div class="blocker">
+
+<div class="blockerTitle">
+BLOCKER 1
+</div>
+
+<select id="dur1">
+<option value="30">30 Seconds</option>
+<option value="60">60 Seconds</option>
+</select>
+
+<div id="timer1"
+class="timer blockerTimer">
+00:30
+</div>
+
+<div class="buttonRow">
+
+<button class="small green"
+onclick="activateBlocker(1)">
+START
+</button>
+
+<button class="small blue"
+onclick="resetBlocker(1)">
+RESET
+</button>
+
+</div>
+
+<div id="release1"
+class="release">
+RELEASE
+</div>
+
+</div>
+
+<div class="blocker">
+
+<div class="blockerTitle">
+BLOCKER 2
+</div>
+
+<select id="dur2">
+<option value="30">30 Seconds</option>
+<option value="60">60 Seconds</option>
+</select>
+
+<div id="timer2"
+class="timer blockerTimer">
+00:30
+</div>
+
+<div class="buttonRow">
+
+<button class="small green"
+onclick="activateBlocker(2)">
+START
+</button>
+
+<button class="small blue"
+onclick="resetBlocker(2)">
+RESET
+</button>
+
+</div>
+
+<div id="release2"
+class="release">
+RELEASE
+</div>
+
+</div>
+
+</div>
+
+<!-- HELP -->
+
+<div class="panel help">
+
+<b>HOW TO</b><br>
+NEW = reset jam to 2:00<br>
+START = run jam & penalties<br>
+STOP = pause all timing<br>
+B1/B2 START = load selected penalty<br>
+RESET = clear blocker<br>
+SEAT = seat jammer<br>
+SWAP = incoming jammer serves time already sat by current jammer<br>
+RELEASE = skater may leave
+
+</div>
+
+</div>
+
+<script>
+
+/* =====================
+WAKE LOCK
+===================== */
+
+let wakeLock = null;
+
+async function enableWakeLock(){
+
+    try{
+
+        wakeLock =
+            await navigator.wakeLock.request(
+                "screen"
+            );
+
+        document.getElementById(
+            "wakeStatus"
+        ).textContent = "AWAKE";
+
+        wakeLock.addEventListener(
+            "release",
+            ()=>{
+                document.getElementById(
+                    "wakeStatus"
+                ).textContent =
+                "RELEASED";
+            }
+        );
+
+    }catch(err){
+
+        document.getElementById(
+            "wakeStatus"
+        ).textContent =
+        "UNSUPPORTED";
+
+    }
+}
+
+document.addEventListener(
+    "visibilitychange",
+    async ()=>{
+
+        if(
+            wakeLock &&
+            document.visibilityState==="visible"
+        ){
+
+            try{
+                wakeLock =
+                await navigator.wakeLock.request(
+                    "screen"
+                );
+            }catch(e){}
+        }
+
+    }
+);
+
+/* =====================
+HELPERS
+===================== */
+
+function vibrate(){
+
+    if(navigator.vibrate){
+        navigator.vibrate(300);
+    }
+
+}
+
+function formatTime(sec){
+
+    let m =
+      Math.floor(sec / 60);
+
+    let s =
+      sec % 60;
+
+    return String(m)
+    .padStart(2,'0')
+    + ':'
+    + String(s)
+    .padStart(2,'0');
+}
+
+/* =====================
+JAM
+===================== */
+
+let jamRunning=false;
+let jamSeconds=120;
+
+function updateJamClock(){
+
+    document
+        .getElementById(
+            "jamClock"
+        )
+        .textContent=
+        formatTime(jamSeconds);
+
+    document
+        .getElementById(
+            "jamStatus"
+        )
+        .textContent=
+        jamRunning
+        ? "RUNNING"
+        : "PAUSED";
+}
+
+function newJam(){
+
+    jamRunning=false;
+    jamSeconds=120;
+
+    updateJamClock();
+}
+
+function startJam(){
+
+    jamRunning=true;
+    updateJamClock();
+}
+
+function stopJam(){
+
+    jamRunning=false;
+    updateJamClock();
+}
+
+/* =====================
+BLOCKERS
+===================== */
+
+const blockers={};
+
+for(let i=1;i<=2;i++){
+
+    blockers[i]={
+        active:false,
+        remaining:30
+    };
+
+    document
+      .getElementById(
+        "dur"+i
+      )
+      .addEventListener(
+        "change",
+        ()=>resetBlocker(i)
+      );
+
+}
+
+function updateBlocker(id){
+
+    const el =
+      document.getElementById(
+        "timer"+id
+      );
+
+    el.textContent =
+      formatTime(
+        blockers[id].remaining
+      );
+
+    el.className =
+      "timer blockerTimer";
+
+    if(
+      blockers[id].remaining<=10 &&
+      blockers[id].remaining>0
+    ){
+        el.classList.add(
+          "warning"
+        );
+    }
+
+    if(
+      blockers[id].remaining===0
+    ){
+        el.classList.add(
+          "expired"
+        );
+    }
+
+}
+
+function activateBlocker(id){
+
+    blockers[id].remaining =
+      parseInt(
+        document
+        .getElementById(
+          "dur"+id
+        ).value
+      );
+
+    blockers[id].active=true;
+
+    document
+      .getElementById(
+        "release"+id
+      )
+      .style.display="none";
+
+    updateBlocker(id);
+
+}
+
+function resetBlocker(id){
+
+    blockers[id].active=false;
+
+    blockers[id].remaining =
+      parseInt(
+       document
+       .getElementById(
+         "dur"+id
+       ).value
+      );
+
+    document
+      .getElementById(
+        "release"+id
+      )
+      .style.display="none";
+
+    updateBlocker(id);
+
+}
+
+resetBlocker(1);
+resetBlocker(2);
+
+/* =====================
+JAMMER
+===================== */
+
+let jammerServing=false;
+let servedTime=0;
+
+let inheritedActive=false;
+let inheritedRemaining=0;
+
+function seatJammer(){
+
+    jammerServing=true;
+    servedTime=0;
+
+    inheritedActive=false;
+    inheritedRemaining=0;
+
+    document
+      .getElementById(
+        "jammerCurrent"
+      )
+      .textContent="0";
+
+    document
+      .getElementById(
+        "jammerIncoming"
+      )
+      .textContent="0";
+
+}
+
+function swapJammer(){
+
+    if(servedTime<=0){
+        return;
+    }
+
+    inheritedRemaining=
+      servedTime;
+
+    inheritedActive=true;
+
+    jammerServing=false;
+
+    document
+      .getElementById(
+        "jammerIncoming"
+      )
+      .textContent=
+      inheritedRemaining;
+
+}
+
+/* =====================
+MASTER CLOCK
+===================== */
+
+setInterval(()=>{
+
+    if(!jamRunning){
+        return;
+    }
+
+    if(jamSeconds>0){
+
+        jamSeconds--;
+
+        updateJamClock();
+
+    }
+
+    for(let i=1;i<=2;i++){
+
+        if(
+          blockers[i].active &&
+          blockers[i].remaining>0
+        ){
+
+            blockers[i].remaining--;
+
+            updateBlocker(i);
+
+            if(
+              blockers[i].remaining===0
+            ){
+
+                blockers[i].active=false;
+
+                document
+                  .getElementById(
+                    "release"+i
+                  )
+                  .style.display=
+                  "block";
+
+                vibrate();
+            }
+        }
+    }
+
+    if(jammerServing){
+
+        servedTime++;
+
+        document
+          .getElementById(
+            "jammerCurrent"
+          )
+          .textContent=
+          servedTime;
+
+    }
+
+    if(
+      inheritedActive &&
+      inheritedRemaining>0
+    ){
+
+        inheritedRemaining--;
+
+        document
+          .getElementById(
+            "jammerIncoming"
+          )
+          .textContent=
+          inheritedRemaining;
+
+        if(
+          inheritedRemaining===0
+        ){
+
+            inheritedActive=false;
+
+            document
+              .getElementById(
+                "jammerIncoming"
+              )
+              .textContent=
+              "REL";
+
+            vibrate();
+        }
+
+    }
+
+},1000);
+
+updateJamClock();
+
+</script>
+
+</body>
+</html>
