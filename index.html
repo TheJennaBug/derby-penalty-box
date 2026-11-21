@@ -96,8 +96,8 @@ button{
 /* WAKE */
 
 .wake{
-    display:grid;
-    grid-template-columns:1fr auto;
+    display:flex;
+    justify-content:center;
     align-items:center;
     gap:8px;
 }
@@ -214,14 +214,6 @@ select{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:2px;
-}
-
-/* HELP */
-
-.help{
-    font-size:.52rem;
-    line-height:1.2;
-    color:#ddd;
 }
 
 </style>
@@ -358,7 +350,7 @@ SWAP
 </div>
 
 <!-- BLOCKERS -->
-
+<div class="panel">
 <div class="blockers">
 
 <div class="blocker">
@@ -401,7 +393,7 @@ RESET
 
 <div id="release1"
 class="release">
-RELEASE
+RELEASE ✓
 </div>
 
 </div>
