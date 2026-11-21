@@ -34,10 +34,9 @@ body{
     display:grid;
     grid-template-rows:
         36px
-        72px
-        120px
+        80px
+        125px
         1fr
-        80px;
     gap:4px;
 }
 
@@ -242,8 +241,13 @@ onclick="enableWakeLock()">
 
 <div id="wakeStatus">
 OFF
-</div>
-
+<br>
+<span style="
+font-size:.45rem;
+color:#aaa;
+">
+Tap once
+</span>
 </div>
 
 <!-- JAM -->
@@ -284,6 +288,13 @@ onclick="stopJam()">
 STOP
 </button>
 
+<div style="
+grid-column:1 / span 3;
+font-size:.5rem;
+color:#999;
+text-align:center;
+">
+NEW = reset jam timer • START = run jam • STOP = pause jam & penalty timers
 </div>
 
 </div>
@@ -314,6 +325,15 @@ SEAT
 
 <div class="jammerTitle">
 INCOMING
+<br>
+
+<span style="
+font-size:.45rem;
+color:#888;
+">
+Swap when 2nd jammer is seated
+</span>
+
 </div>
 
 <div id="jammerIncoming"
@@ -338,6 +358,14 @@ SWAP
 
 <div class="blockerTitle">
 BLOCKER 1
+<br>
+
+<span style="
+font-size:.45rem;
+color:#888;
+">
+Select time • START
+</span>
 </div>
 
 <select id="dur1">
@@ -375,6 +403,14 @@ RELEASE
 
 <div class="blockerTitle">
 BLOCKER 2
+<br>
+
+<span style="
+font-size:.45rem;
+color:#888;
+">
+Select time • START
+</span>
 </div>
 
 <select id="dur2">
@@ -403,26 +439,10 @@ RESET
 
 <div id="release2"
 class="release">
-RELEASE
+RELEASE ✓
 </div>
 
 </div>
-
-</div>
-
-<!-- HELP -->
-
-<div class="panel help">
-
-<b>HOW TO</b><br>
-NEW = reset jam to 2:00<br>
-START = run jam & penalties<br>
-STOP = pause all timing<br>
-B1/B2 START = load selected penalty<br>
-RESET = clear blocker<br>
-SEAT = seat jammer<br>
-SWAP = incoming jammer serves time already sat by current jammer<br>
-RELEASE = skater may leave
 
 </div>
 
